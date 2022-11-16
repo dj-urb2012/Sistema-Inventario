@@ -11,19 +11,21 @@ package com.repuestostorres.invmanager.models;
 public class Product {
     private String id;
     private String name;
-    private double price;
+    private String brand;
+    private String type;
+    private float price;
     private int amount;
-    private double subTotal;
-    
+
     public Product() {
     }
 
-    public Product(String id, String name, double price, int amount, double subTotal) {
+    public Product(String id, String name, String brand, String type, float price, int amount) {
         this.id = id;
         this.name = name;
+        this.brand = brand;
+        this.type = type;
         this.price = price;
         this.amount = amount;
-        this.subTotal = subTotal;
     }
 
     public String getId() {
@@ -42,11 +44,27 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
@@ -57,13 +75,8 @@ public class Product {
     public void setAmount(int amount) {
         this.amount = amount;
     }
-
-    public double getSubTotal() {
-        return subTotal;
-    }
-
-    public void setSubTotal(double subTotal) {
-        this.subTotal = subTotal;
-    }
     
+    public float calculateSubtotal(){
+        return price * amount;
+    }
 }
