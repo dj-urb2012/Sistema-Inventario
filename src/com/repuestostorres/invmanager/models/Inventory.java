@@ -11,13 +11,52 @@ import java.util.HashMap;
  * @author Diego
  */
 public class Inventory {
-    HashMap<String, Product> allProducts = new HashMap<>();
-    
-    private float calcultateInventoryCost(){
-        float totalCost = 0;
-        for(Product product : allProducts.values()){
-            totalCost += totalCost + product.calculateSubtotal();
-        }
+    private HashMap<String, Product> allProducts = new HashMap<>();
+    private float totalCost;
+    private int numberOfProducts;
+
+    public Inventory() {
+    }
+
+    public float getTotalCost() {
         return totalCost;
     }
+
+    public void setTotalCost(float totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public int getNumberOfProducts() {
+        return numberOfProducts;
+    }
+
+    public void setNumberOfProducts(int numberOfProducts) {
+        this.numberOfProducts = numberOfProducts;
+    }
+    
+    public float calculateInventoryCost(){
+        if(allProducts.isEmpty()) return 0;
+        float sumOfCosts = 0;
+        for(Product product : allProducts.values()) {
+            sumOfCosts += product.calculateSubtotal();
+        }
+        this.totalCost = sumOfCosts;
+        return sumOfCosts;
+    }
+    public void editProductAmount(String id, int amount) {
+        this.allProducts.get(id).setAmount(amount);
+    }
+    public int calculateNumberOfProducts() {
+        this.numberOfProducts = allProducts.size();
+        return allProducts.size();
+    }
+    public void addProduct(Product product) {
+        this.allProducts.put(product.getId(), product);
+    }
+    public void removeProduct(String id) {
+        this.allProducts.remove(id);
+    }
+    public Product searchProduct(String id) {
+        return allProducts.get(id);
+    } 
 }

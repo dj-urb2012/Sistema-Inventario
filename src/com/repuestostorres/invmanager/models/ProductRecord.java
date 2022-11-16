@@ -8,32 +8,22 @@ package com.repuestostorres.invmanager.models;
  *
  * @author Diego
  */
-public class Product {
-    private String id;
+public class ProductRecord {
     private String name;
     private String brand;
     private String type;
-    private float price;
     private int amount;
+    private float cost;
 
-    public Product() {
+    public ProductRecord() {
     }
 
-    public Product(String id, String name, String brand, String type, float price, int amount) {
-        this.id = id;
+    public ProductRecord(String name, String brand, String type, int amount, float cost) {
         this.name = name;
         this.brand = brand;
         this.type = type;
-        this.price = price;
         this.amount = amount;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.cost = cost;
     }
 
     public String getName() {
@@ -60,14 +50,6 @@ public class Product {
         this.type = type;
     }
 
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
     public int getAmount() {
         return amount;
     }
@@ -75,8 +57,16 @@ public class Product {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+    public float getCost() {
+        return cost;
+    }
+
+    public void setCost(float cost) {
+        this.cost = cost;
+    }
     
-    public float calculateSubtotal() {
-        return price * amount;
+    public float calculateCost() {
+        return amount * cost;
     }
 }

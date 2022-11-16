@@ -13,17 +13,13 @@ public class User {
     public static boolean isIsRegistered() {
         return isRegistered;
     }
-
-    public static void setIsRegistered(boolean aIsRegistered) {
-        isRegistered = aIsRegistered;
-    }
     private String loginName;
     private String passwd;
     private static boolean isRegistered;
 
     public User() {
     }
-
+    
     public User(String loginName, String passwd) {
         this.loginName = loginName;
         this.passwd = passwd;
@@ -33,15 +29,20 @@ public class User {
         return loginName;
     }
 
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
-    }
-
     public String getPasswd() {
         return passwd;
     }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
+    
+    public void createAccount() {
+        //
+    }
+    public void checkAccount() {
+        //
+    }
+    public void closeSession() {
+        //
+    }
+    public void login() { //boolean
+        //
     }
 }
