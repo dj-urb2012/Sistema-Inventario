@@ -4,6 +4,8 @@
  */
 package com.repuestostorres.invmanager;
 
+import com.repuestostorres.invmanager.presentation.FrmProducts;
+
 /**
  *
  * @author Diego
@@ -15,6 +17,8 @@ public class App {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        FrmProducts form = new FrmProducts();
+        form.setVisible(true);
     }
     
 }
