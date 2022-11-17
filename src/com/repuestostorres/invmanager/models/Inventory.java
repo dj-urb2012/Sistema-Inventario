@@ -43,8 +43,8 @@ public class Inventory {
         this.totalCost = sumOfCosts;
         return sumOfCosts;
     }
-    public void editProductAmount(String id, int amount) {
-        this.allProducts.get(id).setAmount(amount);
+    public void editProductStockValue(String id, int newStockValue) {
+        this.allProducts.get(id).setStock(newStockValue);
     }
     public int calculateNumberOfProducts() {
         this.numberOfProducts = allProducts.size();

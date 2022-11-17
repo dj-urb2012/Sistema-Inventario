@@ -11,19 +11,21 @@ package com.repuestostorres.invmanager.models;
 public class ProductRecord {
     private String name;
     private String brand;
-    private String type;
-    private int amount;
-    private float cost;
+    private String recordType;
+    private int numberOfProducts;
+    private float price;
+    private float total;
 
     public ProductRecord() {
     }
 
-    public ProductRecord(String name, String brand, String type, int amount, float cost) {
+    public ProductRecord(String name, String brand, String recordType, int numberOfProducts, float price, float total) {
         this.name = name;
         this.brand = brand;
-        this.type = type;
-        this.amount = amount;
-        this.cost = cost;
+        this.recordType = recordType;
+        this.numberOfProducts = numberOfProducts;
+        this.price = price;
+        this.total = total;
     }
 
     public String getName() {
@@ -42,31 +44,39 @@ public class ProductRecord {
         this.brand = brand;
     }
 
-    public String getType() {
-        return type;
+    public String getRecordType() {
+        return recordType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setRecordType(String recordType) {
+        this.recordType = recordType;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getNumberOfProducts() {
+        return numberOfProducts;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setNumberOfProducts(int numberOfProducts) {
+        this.numberOfProducts = numberOfProducts;
     }
 
-    public float getCost() {
-        return cost;
+    public float getPrice() {
+        return price;
     }
 
-    public void setCost(float cost) {
-        this.cost = cost;
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
     }
     
-    public float calculateCost() {
-        return amount * cost;
+    public float calculateTotal() {
+        return numberOfProducts * price;
     }
 }

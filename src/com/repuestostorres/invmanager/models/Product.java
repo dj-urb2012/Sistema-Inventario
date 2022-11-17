@@ -14,18 +14,18 @@ public class Product {
     private String brand;
     private String type;
     private float price;
-    private int amount;
+    private int stock;
 
     public Product() {
     }
 
-    public Product(String id, String name, String brand, String type, float price, int amount) {
+    public Product(String id, String name, String brand, String type, float price, int stock) {
         this.id = id;
         this.name = name;
         this.brand = brand;
         this.type = type;
         this.price = price;
-        this.amount = amount;
+        this.stock = stock;
     }
 
     public String getId() {
@@ -68,15 +68,15 @@ public class Product {
         this.price = price;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getStock() {
+        return stock;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
     
     public float calculateSubtotal() {
-        return price * amount;
+        return price * stock;
     }
 }
