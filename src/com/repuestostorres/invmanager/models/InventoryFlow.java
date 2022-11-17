@@ -36,7 +36,7 @@ public class InventoryFlow {
     }
 
     public void addProductRecord(ProductRecord productRecord) {
-        if("In".equals(productRecord.getType())) 
+        if("In".equals(productRecord.getRecordType())) 
             this.productsIn.add(productRecord);
         else this.productsOut.add(productRecord);
     }
@@ -44,7 +44,7 @@ public class InventoryFlow {
     public float calculateTotalOut() {
         float sumOfCosts = 0;
         for(ProductRecord productRecord : productsOut) {
-            sumOfCosts += productRecord.calculateCost();
+            sumOfCosts += productRecord.calculateTotal();
         }
         this.totalOut = sumOfCosts;
         return sumOfCosts;
@@ -52,7 +52,7 @@ public class InventoryFlow {
     private float calculateTotalIn() {
         float sumOfCosts = 0;
         for(ProductRecord productRecord : productsIn) {
-            sumOfCosts += productRecord.calculateCost();
+            sumOfCosts += productRecord.calculateTotal();
         }
         this.totalIn = sumOfCosts;
         return sumOfCosts;
