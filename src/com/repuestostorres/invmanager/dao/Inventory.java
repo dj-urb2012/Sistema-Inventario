@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.repuestostorres.invmanager.models;
+package com.repuestostorres.invmanager.dao;
 
+import com.repuestostorres.invmanager.models.Product;
+import java.sql.ResultSet;
 import java.util.HashMap;
 
 /**
@@ -14,6 +16,7 @@ public class Inventory {
     private HashMap<String, Product> allProducts = new HashMap<>();
     private float totalCost;
     private int numberOfProducts;
+    ResultSet rs = null;
 
     public Inventory() {
     }

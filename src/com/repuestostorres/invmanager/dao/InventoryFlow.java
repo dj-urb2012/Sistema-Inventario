@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.repuestostorres.invmanager.models;
+package com.repuestostorres.invmanager.dao;
 
+import com.repuestostorres.invmanager.models.ProductRecord;
 import java.util.ArrayList;
 
 /**
@@ -15,6 +16,7 @@ public class InventoryFlow {
     private ArrayList<ProductRecord> productsIn = new ArrayList<>();
     private float totalIn;
     private float totalOut;
+    
 
     public InventoryFlow() {
     }

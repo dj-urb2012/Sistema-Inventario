@@ -39,7 +39,7 @@ public class User {
     public void checkAccount() {
         //
     }
-    public void closeSession() {
+    public void logout() {
         //
     }
     public void login() { //boolean

@@ -14,18 +14,16 @@ public class ProductRecord {
     private String recordType;
     private int numberOfProducts;
     private float price;
-    private float total;
 
     public ProductRecord() {
     }
 
-    public ProductRecord(String name, String brand, String recordType, int numberOfProducts, float price, float total) {
+    public ProductRecord(String name, String brand, String recordType, int numberOfProducts, float price) {
         this.name = name;
         this.brand = brand;
         this.recordType = recordType;
         this.numberOfProducts = numberOfProducts;
         this.price = price;
-        this.total = total;
     }
 
     public String getName() {
@@ -66,14 +64,6 @@ public class ProductRecord {
 
     public void setPrice(float price) {
         this.price = price;
-    }
-
-    public float getTotal() {
-        return total;
-    }
-
-    public void setTotal(float total) {
-        this.total = total;
     }
     
     public float calculateTotal() {
