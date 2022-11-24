@@ -4,10 +4,6 @@
  */
 package com.repuestostorres.invmanager.model;
 
-/**
- *
- * @author Diego
- */
 public class Product {
     private String id;
     private String name;
