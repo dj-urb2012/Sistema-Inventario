@@ -2,28 +2,38 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.repuestostorres.invmanager.models;
+package com.repuestostorres.invmanager.model;
 
 /**
  *
  * @author Diego
  */
-public class ProductRecord {
+public class Product {
+    private String id;
     private String name;
     private String brand;
-    private String recordType;
-    private int numberOfProducts;
+    private String type;
     private float price;
+    private int stock;
 
-    public ProductRecord() {
+    public Product() {
     }
 
-    public ProductRecord(String name, String brand, String recordType, int numberOfProducts, float price) {
+    public Product(String id, String name, String brand, String type, float price, int stock) {
+        this.id = id;
         this.name = name;
         this.brand = brand;
-        this.recordType = recordType;
-        this.numberOfProducts = numberOfProducts;
+        this.type = type;
         this.price = price;
+        this.stock = stock;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -42,20 +52,12 @@ public class ProductRecord {
         this.brand = brand;
     }
 
-    public String getRecordType() {
-        return recordType;
+    public String getType() {
+        return type;
     }
 
-    public void setRecordType(String recordType) {
-        this.recordType = recordType;
-    }
-
-    public int getNumberOfProducts() {
-        return numberOfProducts;
-    }
-
-    public void setNumberOfProducts(int numberOfProducts) {
-        this.numberOfProducts = numberOfProducts;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public float getPrice() {
@@ -65,8 +67,16 @@ public class ProductRecord {
     public void setPrice(float price) {
         this.price = price;
     }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
     
-    public float calculateTotal() {
-        return numberOfProducts * price;
+    public float calculateSubtotal() {
+        return price * stock;
     }
 }

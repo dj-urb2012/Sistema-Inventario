@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.repuestostorres.invmanager.models;
+package com.repuestostorres.invmanager.model;
 
 /**
  *
@@ -10,12 +10,9 @@ package com.repuestostorres.invmanager.models;
  */
 public class User {
 
-    public static boolean isIsRegistered() {
-        return isRegistered;
-    }
     private String loginName;
     private String passwd;
-    private static boolean isRegistered;
+    private static boolean registered;
 
     public User() {
     }
@@ -33,16 +30,24 @@ public class User {
         return passwd;
     }
     
+    public static boolean isRegistered() {
+        return registered;
+    }
+
+    public static void setRegistered(boolean aRegistered) {
+        registered = aRegistered;
+    }
+    
     public void createAccount() {
         //
     }
-    public void checkAccount() {
+    public void verifyIfAccountIsCreated() {
         //
     }
     public void logout() {
         //
     }
-    public void login() { //boolean
+    public void login() {
         //
     }
 }
