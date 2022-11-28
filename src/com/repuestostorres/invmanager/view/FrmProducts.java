@@ -51,6 +51,7 @@ public class FrmProducts extends javax.swing.JFrame {
         TfCategory = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         TfPrice = new javax.swing.JTextField();
+        BtnAd = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TblProducts = new javax.swing.JTable();
@@ -78,9 +79,9 @@ public class FrmProducts extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(40, 40, 40)
                 .addComponent(jLabel8)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(316, Short.MAX_VALUE))
+                .addContainerGap(388, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,44 +92,55 @@ public class FrmProducts extends javax.swing.JFrame {
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(15, 15, 15))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
                         .addGap(24, 24, 24))))
         );
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jTabbedPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         jLabel1.setText("ID:");
 
+        TfId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TfIdActionPerformed(evt);
+            }
+        });
+
         jToolBar1.setRollover(true);
 
-        BtnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/view/icons/save.png"))); // NOI18N
+        BtnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/save.png"))); // NOI18N
         BtnSave.setToolTipText("Save");
         BtnSave.setFocusable(false);
         BtnSave.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnSave.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(BtnSave);
 
-        BtnNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/view/icons/new.png"))); // NOI18N
+        BtnNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/new.png"))); // NOI18N
         BtnNew.setToolTipText("New");
         BtnNew.setFocusable(false);
         BtnNew.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnNew.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(BtnNew);
 
-        BtnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/view/icons/delete.png"))); // NOI18N
+        BtnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/delete.png"))); // NOI18N
         BtnDelete.setToolTipText("Delete");
         BtnDelete.setFocusable(false);
         BtnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(BtnDelete);
 
-        BtnSaveInDB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/view/icons/save_database.png"))); // NOI18N
+        BtnSaveInDB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/save_database.png"))); // NOI18N
         BtnSaveInDB.setToolTipText("Save in DB");
         BtnSaveInDB.setFocusable(false);
         BtnSaveInDB.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnSaveInDB.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        BtnSaveInDB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSaveInDBActionPerformed(evt);
+            }
+        });
         jToolBar1.add(BtnSaveInDB);
 
         jLabel2.setText("Name:");
@@ -139,6 +151,8 @@ public class FrmProducts extends javax.swing.JFrame {
 
         jLabel5.setText("Price $:");
 
+        BtnAd.setText("Add");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -146,8 +160,8 @@ public class FrmProducts extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(92, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(102, 102, 102)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel5)
                     .addComponent(jLabel4)
@@ -158,16 +172,18 @@ public class FrmProducts extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(TfId, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TfBrand)
-                    .addComponent(TfCategory, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                    .addComponent(TfPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TfName))
-                .addGap(112, 112, 112))
+                    .addComponent(TfCategory)
+                    .addComponent(TfName, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(BtnAd)
+                        .addComponent(TfPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(102, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TfId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
@@ -187,10 +203,12 @@ public class FrmProducts extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TfPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(BtnAd)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Data", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/view/icons/data.png")), jPanel2, "Data"); // NOI18N
+        jTabbedPane1.addTab("Data", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/data.png")), jPanel2, "Data"); // NOI18N
 
         TblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -236,7 +254,7 @@ public class FrmProducts extends javax.swing.JFrame {
                 .addGap(23, 23, 23))
         );
 
-        jTabbedPane1.addTab("Products", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/view/icons/product.png")), jPanel3, "Products"); // NOI18N
+        jTabbedPane1.addTab("Products", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/product.png")), jPanel3, "Products"); // NOI18N
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -265,7 +283,7 @@ public class FrmProducts extends javax.swing.JFrame {
                 .addGap(20, 20, 20))
         );
 
-        jTabbedPane1.addTab("Total", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/view/icons/total.png")), jPanel5, "Total"); // NOI18N
+        jTabbedPane1.addTab("Total", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/total.png")), jPanel5, "Total"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -292,9 +310,7 @@ public class FrmProducts extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,6 +325,14 @@ public class FrmProducts extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void BtnSaveInDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSaveInDBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnSaveInDBActionPerformed
+
+    private void TfIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TfIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TfIdActionPerformed
 
     /**
      * @param args the command line arguments
@@ -347,6 +371,7 @@ public class FrmProducts extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnAd;
     private javax.swing.JButton BtnDelete;
     private javax.swing.JButton BtnNew;
     private javax.swing.JButton BtnSave;
