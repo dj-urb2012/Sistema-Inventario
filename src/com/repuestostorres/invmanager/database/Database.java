@@ -18,7 +18,7 @@ public class Database {
         String connectionUrl = "jdbc:sqlserver://localhost:14433;"
                 + "database=InventoryBD;"
                 + "user=sa"
-                + "password=1234"
+                + "password=12345"
                 + "loginTimeout=30;";
         try { 
             connection = DriverManager.getConnection(connectionUrl);

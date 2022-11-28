@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Diego
  */
 public interface ProductDao {
-    void insertProduct();
+    void insertProduct(Product product);
     ArrayList<Product> getAllProducts();
     Product getProductByName();
     Product getProdyById();

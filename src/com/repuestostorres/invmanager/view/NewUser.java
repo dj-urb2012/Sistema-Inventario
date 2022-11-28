@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.repuestostorres.invmanager.presentation;
+package com.repuestostorres.invmanager.view;
 
 import javax.swing.JOptionPane;
 
@@ -136,11 +136,11 @@ public class NewUser extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-FrmLogin loginUsuario= new FrmLogin();
+//FrmLogin loginUsuario= new FrmLogin();
 if(jPasswordField1== jPasswordField2){
 
 JOptionPane.showMessageDialog(null,"New User sucess");
-loginUsuario.setVisible(true);
+//loginUsuario.setVisible(true);
 
 
 }else

@@ -4,6 +4,9 @@
  */
 package com.repuestostorres.invmanager;
 
+import com.repuestostorres.invmanager.view.FrmInventory;
+
+
 /**
  *
  * @author Diego
@@ -14,7 +17,8 @@ public class App {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+        FrmInventory frm = new FrmInventory();
+        frm.setVisible(true);
     }
     
 }
