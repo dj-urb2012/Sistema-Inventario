@@ -19,6 +19,7 @@ public class App {
     public static void main(String[] args) {
         FrmInventory frm = new FrmInventory();
         frm.setVisible(true);
+        frm.setLocationRelativeTo(null);
     }
     
 }

@@ -24,6 +24,22 @@ public class Product {
         this.stock = stock;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Product{");
+        sb.append("id=").append(id);
+        sb.append(", name=").append(name);
+        sb.append(", brand=").append(brand);
+        sb.append(", type=").append(type);
+        sb.append(", price=").append(price);
+        sb.append(", stock=").append(stock);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    
+    
     public String getId() {
         return id;
     }
