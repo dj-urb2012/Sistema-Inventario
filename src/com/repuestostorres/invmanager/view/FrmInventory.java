@@ -5,6 +5,8 @@
 package com.repuestostorres.invmanager.view;
 
 import com.repuestostorres.invmanager.model.Product;
+import com.repuestostorres.invmanager.model.ProductRecord;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -29,15 +31,24 @@ public class FrmInventory extends javax.swing.JFrame {
         totalDemo.addColumn("Name");
         totalDemo.addColumn("Brand");
         totalDemo.addColumn("Subtotal");
+        statsDemo.addColumn("Name");
+        statsDemo.addColumn("Brand");
+        statsDemo.addColumn("Record type");
+        statsDemo.addColumn("Amount");
+        statsDemo.addColumn("Price");
+        statsDemo.addColumn("Subtotal");
         this.allProductsTable.setModel(allDemo);
+        this.editStock.setEnabled(false);
     }
 
     //Data structures
     HashMap<String, Product> allProducts = new HashMap<>();
     DefaultTableModel allDemo = new DefaultTableModel(); //(DefaultTableModel) this.allProductsTable.getModel();
     DefaultTableModel totalDemo = new DefaultTableModel();
+    DefaultTableModel statsDemo = new DefaultTableModel();
+    ArrayList<ProductRecord> productRecords = new ArrayList<>();
     Product currentProduct = null;
-    
+    boolean saveFlowRecord = false;
     //Functions
     
     public String generateId() {
@@ -113,6 +124,21 @@ public class FrmInventory extends javax.swing.JFrame {
         this.amountInDollarsPane.setText(Float.toString(getAmountInDollars()));
     }
     
+    public void refreshRecordTable(ProductRecord productrecord) {
+        statsDemo.setRowCount(0);
+        for(ProductRecord singleProductRecord : productRecords) {
+            statsDemo.addRow(new Object[] {
+                singleProductRecord.getName(),
+                singleProductRecord.getBrand(),
+                singleProductRecord.getRecordType(),
+                singleProductRecord.getNumberOfProducts(),
+                singleProductRecord.getPrice(),
+                singleProductRecord.calculateTotal()
+            });
+        }
+        this.productRecordsTable.setModel(statsDemo);
+    }
+    
     public void clean() {
         this.nameTextField.setText("");
         this.catTextField.setText("");
@@ -132,6 +158,43 @@ public class FrmInventory extends javax.swing.JFrame {
         ));
         this.stockTextField.setText(Integer.toString(currentProduct.getStock()));
         productsTabbedPane.setSelectedIndex(0);
+    }
+    
+    public ProductRecord getDataforRecord() {
+        String name = this.nameTextField.getText();
+        String brand = this.brandTextField.getText();
+        String recordType;
+        while(true) {
+            recordType = JOptionPane.showInputDialog("In or Out");
+            if(recordType.toUpperCase().equals("IN") || recordType.toUpperCase()
+                    .equals("OUT")) break;
+        }
+        int amount;
+        int currentAmount;
+        if(recordType.equals("out")) {
+            while(true) {
+                amount = Integer.parseInt(JOptionPane.showInputDialog("Amount of "
+                    + "products + or -"));
+                currentAmount = Integer.parseInt(this.stockTextField.getText());
+                currentAmount -= amount;
+                if(currentAmount > 0) {
+                    this.stockTextField.setText(Integer.toString(currentAmount));
+                    break;
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid amount of products");
+                }
+            }
+        } else {
+            amount = Integer.parseInt(JOptionPane.showInputDialog("Amount of "
+                    + "products + or -"));
+            currentAmount = Integer.parseInt(this.stockTextField.getText()) +
+                    amount;
+            this.stockTextField.setText(Integer.toString(currentAmount));
+        }
+        float price = Float.parseFloat(this.priceTextField.getText());
+        ProductRecord pr = new ProductRecord(name, brand, recordType, 
+                        amount, price);
+        return pr;
     }
     
     /**
@@ -154,6 +217,8 @@ public class FrmInventory extends javax.swing.JFrame {
         updateLocally = new javax.swing.JButton();
         deleteProduct = new javax.swing.JButton();
         saveToDatabase = new javax.swing.JButton();
+        FlowRecords = new javax.swing.JButton();
+        editStock = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -176,6 +241,9 @@ public class FrmInventory extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         amountInDollarsPane = new javax.swing.JTextPane();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        productRecordsTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -258,6 +326,28 @@ public class FrmInventory extends javax.swing.JFrame {
         saveToDatabase.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         saveToDatabase.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(saveToDatabase);
+
+        FlowRecords.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/stat2.png"))); // NOI18N
+        FlowRecords.setFocusable(false);
+        FlowRecords.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        FlowRecords.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        FlowRecords.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FlowRecordsActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(FlowRecords);
+
+        editStock.setText("Edit stock");
+        editStock.setFocusable(false);
+        editStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        editStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        editStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editStockActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(editStock);
 
         jLabel3.setText("Name:");
 
@@ -442,6 +532,35 @@ public class FrmInventory extends javax.swing.JFrame {
 
         productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/total.png")), jPanel4); // NOI18N
 
+        productRecordsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Name", "Brand", "Record Type", "Amount", "Price", "Subtotal"
+            }
+        ));
+        jScrollPane5.setViewportView(productRecordsTable);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 734, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/stats.png")), jPanel5); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -474,6 +593,8 @@ public class FrmInventory extends javax.swing.JFrame {
 
     private void newProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProductActionPerformed
         clean();
+        this.stockTextField.setEditable(true);
+        this.editStock.setEnabled(false);
     }//GEN-LAST:event_newProductActionPerformed
 
     private void saveLocallyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveLocallyActionPerformed
@@ -481,9 +602,11 @@ public class FrmInventory extends javax.swing.JFrame {
         allProducts.put(product.getId(), product);
         refreshTable(product);
         refreshSubtotalTable(product);
-        JOptionPane.showMessageDialog(this, "Product succesfullysaved", 
+        JOptionPane.showMessageDialog(this, "Product succesfully saved", 
                 "Product saved", JOptionPane.INFORMATION_MESSAGE);
         clean();
+        this.stockTextField.setEditable(true); 
+        this.editStock.setEnabled(false);
     }//GEN-LAST:event_saveLocallyActionPerformed
 
     private void deleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProductActionPerformed
@@ -497,6 +620,8 @@ public class FrmInventory extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Product successfully deleted", 
                     "Product deleted", JOptionPane.INFORMATION_MESSAGE);
             clean();
+            this.stockTextField.setEditable(true);
+            this.editStock.setEnabled(false);
         } else {
             JOptionPane.showMessageDialog(this, "Product not removed", 
                     "aborted", JOptionPane.INFORMATION_MESSAGE);
@@ -509,19 +634,39 @@ public class FrmInventory extends javax.swing.JFrame {
     }//GEN-LAST:event_subtotalTableMouseClicked
 
     private void allProductsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allProductsTableMouseClicked
+        this.stockTextField.setEditable(false);
+        this.editStock.setEnabled(true);
         DefaultTableModel model = (DefaultTableModel) allProductsTable.getModel();
         String id = (String) model.getValueAt(allProductsTable.getSelectedRow(), 0);
         loadDataToForm(id);
     }//GEN-LAST:event_allProductsTableMouseClicked
 
     private void updateLocallyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateLocallyActionPerformed
+        if(saveFlowRecord) {
+            ProductRecord pr = getDataforRecord();
+            productRecords.add(pr);
+            refreshRecordTable(pr);
+            saveFlowRecord = false;
+        }
         Product product = getProduct(false);
         allProducts.put(currentProduct.getId(), product);
         refreshTable(product);
         refreshSubtotalTable(product);
-        JOptionPane.showMessageDialog(this, "Saved", "Updated successfully", JOptionPane.INFORMATION_MESSAGE);
+        this.editStock.setEnabled(false);
         clean();
+        JOptionPane.showMessageDialog(this, "Saved", "Updated successfully", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_updateLocallyActionPerformed
+
+    private void FlowRecordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FlowRecordsActionPerformed
+        saveFlowRecord = true;
+        this.editStock.setEnabled(false);
+        JOptionPane.showMessageDialog(this, "A record is about to be saved"
+                + " Please update locally");
+    }//GEN-LAST:event_FlowRecordsActionPerformed
+
+    private void editStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editStockActionPerformed
+        this.stockTextField.setEditable(true);
+    }//GEN-LAST:event_editStockActionPerformed
 
     /**
      * @param args the command line arguments
@@ -559,12 +704,14 @@ public class FrmInventory extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton FlowRecords;
     private javax.swing.JTable allProductsTable;
     private javax.swing.JTextPane amountInDollarsPane;
     private javax.swing.JTextPane amountPane;
     private javax.swing.JTextField brandTextField;
     private javax.swing.JTextField catTextField;
     private javax.swing.JButton deleteProduct;
+    private javax.swing.JButton editStock;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -578,14 +725,17 @@ public class FrmInventory extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JButton newProduct;
     private javax.swing.JTextField priceTextField;
+    private javax.swing.JTable productRecordsTable;
     private javax.swing.JTabbedPane productsTabbedPane;
     private javax.swing.JButton saveLocally;
     private javax.swing.JButton saveToDatabase;
