@@ -6,6 +6,7 @@ package com.repuestostorres.invmanager.view;
 
 import com.repuestostorres.invmanager.model.Product;
 import java.util.HashMap;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,10 +19,23 @@ public class FrmInventory extends javax.swing.JFrame {
      */
     public FrmInventory() {
         initComponents();
+        allDemo.addColumn("ID");
+        allDemo.addColumn("Name");
+        allDemo.addColumn("Brand");
+        allDemo.addColumn("Type");
+        allDemo.addColumn("Price");
+        allDemo.addColumn("Stock");
+        totalDemo.addColumn("ID");
+        totalDemo.addColumn("Name");
+        totalDemo.addColumn("Brand");
+        totalDemo.addColumn("Subtotal");
+        this.allProductsTable.setModel(allDemo);
     }
 
     //Data structures
     HashMap<String, Product> allProducts = new HashMap<>();
+    DefaultTableModel allDemo = new DefaultTableModel(); //(DefaultTableModel) this.allProductsTable.getModel();
+    DefaultTableModel totalDemo = new DefaultTableModel();
     
     //Functions
     
@@ -52,6 +66,28 @@ public class FrmInventory extends javax.swing.JFrame {
         int stock = Integer.parseInt(this.stockTextField.getText());
         Product product = new Product(id, name, brand, cat, price, stock);
         return product;
+    }
+    
+    public void refreshTable(Product product) {
+        allDemo.addRow(new Object[] {
+            product.getId(),
+            product.getName(),
+            product.getBrand(),
+            product.getType(),
+            Float.toString(product.getPrice()),
+            Integer.toString(product.getStock())
+        });
+        this.allProductsTable.setModel(allDemo);
+    }
+    
+    public void refreshSubtotalTable(Product product) {
+        totalDemo.addRow(new Object[] {
+            product.getId(),
+            product.getName(),
+            product.getBrand(),
+            product.calculateSubtotal()
+        });
+        this.subtotalTable.setModel(totalDemo);
     }
     
     /**
@@ -85,10 +121,10 @@ public class FrmInventory extends javax.swing.JFrame {
         priceTextField = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        allProductsTable = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        subtotalTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -246,18 +282,15 @@ public class FrmInventory extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/data.png")), jPanel2); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        allProductsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Name", "Brand", "Type", "Price", "Stock"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(allProductsTable);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -278,18 +311,15 @@ public class FrmInventory extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/product.png")), jPanel3); // NOI18N
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        subtotalTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Name", "Brand", "Subtotal"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(subtotalTable);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -352,9 +382,9 @@ public class FrmInventory extends javax.swing.JFrame {
     private void saveLocallyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveLocallyActionPerformed
         Product product = createProduct();
         allProducts.put(product.getId(), product);
-        for(Product roduct : allProducts.values()) {
-            System.out.println(roduct);
-        }
+        refreshTable(product);
+        refreshSubtotalTable(product);
+        
     }//GEN-LAST:event_saveLocallyActionPerformed
 
     /**
@@ -393,6 +423,7 @@ public class FrmInventory extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable allProductsTable;
     private javax.swing.JTextField brandTextField;
     private javax.swing.JTextField catTextField;
     private javax.swing.JButton deleteProduct;
@@ -410,8 +441,6 @@ public class FrmInventory extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JButton newProduct;
@@ -419,5 +448,6 @@ public class FrmInventory extends javax.swing.JFrame {
     private javax.swing.JButton saveLocally;
     private javax.swing.JButton saveToDatabase;
     private javax.swing.JTextField stockTextField;
+    private javax.swing.JTable subtotalTable;
     // End of variables declaration//GEN-END:variables
 }
