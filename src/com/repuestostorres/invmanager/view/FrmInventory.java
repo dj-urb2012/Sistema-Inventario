@@ -6,6 +6,7 @@ package com.repuestostorres.invmanager.view;
 
 import com.repuestostorres.invmanager.model.Product;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,7 +26,6 @@ public class FrmInventory extends javax.swing.JFrame {
         allDemo.addColumn("Type");
         allDemo.addColumn("Price");
         allDemo.addColumn("Stock");
-        totalDemo.addColumn("ID");
         totalDemo.addColumn("Name");
         totalDemo.addColumn("Brand");
         totalDemo.addColumn("Subtotal");
@@ -36,13 +36,14 @@ public class FrmInventory extends javax.swing.JFrame {
     HashMap<String, Product> allProducts = new HashMap<>();
     DefaultTableModel allDemo = new DefaultTableModel(); //(DefaultTableModel) this.allProductsTable.getModel();
     DefaultTableModel totalDemo = new DefaultTableModel();
+    Product currentProduct = null;
     
     //Functions
     
     public String generateId() {
         boolean flag = true;
         String id = "";
-        String[] letters = {"a", "b", "c", "d", "e", "f", "g", "h", "i"};
+        String[] letters = {"D", "B", "C", "D", "E", "F", "G", "H", "I"};
         int[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         for(int i = 0; i < 5; i++) {
             int rand = (int)(Math.random() * 9);
@@ -57,37 +58,80 @@ public class FrmInventory extends javax.swing.JFrame {
         return id;
     }
     
-    public Product createProduct() {
-        String id = generateId();
+    public Product getProduct(boolean isNew) {
+        String id;
+        if(isNew){
+            id = generateId();
+        } else id = currentProduct.getId();
         String name = this.nameTextField.getText();
         String cat = this.catTextField.getText();
         String brand = this.brandTextField.getText();
-        float price = Integer.parseInt(this.priceTextField.getText());
+        float price = Float.parseFloat(this.priceTextField.getText());
         int stock = Integer.parseInt(this.stockTextField.getText());
         Product product = new Product(id, name, brand, cat, price, stock);
         return product;
     }
     
+    public int getAmountOfProducts() {
+        return allProducts.size();
+    }
+    
+    public float getAmountInDollars() {
+        float total = 0;
+        for(Product product : allProducts.values()) {
+            total += product.calculateSubtotal();
+        }
+        return total;
+    }
+    
     public void refreshTable(Product product) {
-        allDemo.addRow(new Object[] {
-            product.getId(),
-            product.getName(),
-            product.getBrand(),
-            product.getType(),
-            Float.toString(product.getPrice()),
-            Integer.toString(product.getStock())
-        });
+        allDemo.setRowCount(0);
+        for(Product singleProduct : allProducts.values()) {
+            allDemo.addRow(new Object[] {
+                singleProduct.getId(),
+                singleProduct.getName(),
+                singleProduct.getBrand(),
+                singleProduct.getType(),
+                Float.toString(singleProduct.getPrice()),
+                Integer.toString(singleProduct.getStock())
+            });
+        }
         this.allProductsTable.setModel(allDemo);
     }
     
     public void refreshSubtotalTable(Product product) {
-        totalDemo.addRow(new Object[] {
-            product.getId(),
-            product.getName(),
-            product.getBrand(),
-            product.calculateSubtotal()
-        });
+        totalDemo.setRowCount(0);
+        for(Product singleProduct : allProducts.values()) {
+            totalDemo.addRow(new Object[] {
+                singleProduct.getName(),
+                singleProduct.getBrand(),
+                singleProduct.calculateSubtotal()
+            });
+        }
         this.subtotalTable.setModel(totalDemo);
+        this.amountPane.setText(Integer.toString(getAmountOfProducts()));
+        this.amountInDollarsPane.setText(Float.toString(getAmountInDollars()));
+    }
+    
+    public void clean() {
+        this.nameTextField.setText("");
+        this.catTextField.setText("");
+        this.brandTextField.setText("");
+        this.priceTextField.setText("");
+        this.stockTextField.setText("");
+        this.nameTextField.requestFocus();
+    }
+    
+    public void loadDataToForm(String id) {
+        currentProduct = allProducts.get(id);
+        this.nameTextField.setText(currentProduct.getName());
+        this.brandTextField.setText(currentProduct.getBrand());
+        this.catTextField.setText(currentProduct.getType());
+        this.priceTextField.setText(Float.toString(
+                currentProduct.getPrice()
+        ));
+        this.stockTextField.setText(Integer.toString(currentProduct.getStock()));
+        productsTabbedPane.setSelectedIndex(0);
     }
     
     /**
@@ -102,11 +146,12 @@ public class FrmInventory extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        productsTabbedPane = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         newProduct = new javax.swing.JButton();
         saveLocally = new javax.swing.JButton();
+        updateLocally = new javax.swing.JButton();
         deleteProduct = new javax.swing.JButton();
         saveToDatabase = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -125,6 +170,12 @@ public class FrmInventory extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         subtotalTable = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        amountPane = new javax.swing.JTextPane();
+        jLabel9 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        amountInDollarsPane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -180,10 +231,26 @@ public class FrmInventory extends javax.swing.JFrame {
         });
         jToolBar1.add(saveLocally);
 
+        updateLocally.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/update.png"))); // NOI18N
+        updateLocally.setFocusable(false);
+        updateLocally.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        updateLocally.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        updateLocally.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateLocallyActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(updateLocally);
+
         deleteProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/delete.png"))); // NOI18N
         deleteProduct.setFocusable(false);
         deleteProduct.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         deleteProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deleteProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteProductActionPerformed(evt);
+            }
+        });
         jToolBar1.add(deleteProduct);
 
         saveToDatabase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/save_database.png"))); // NOI18N
@@ -221,10 +288,7 @@ public class FrmInventory extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(168, 168, 168)
+                        .addGap(166, 166, 166)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(13, 13, 13)
@@ -235,7 +299,7 @@ public class FrmInventory extends javax.swing.JFrame {
                                             .addComponent(jLabel7))
                                         .addGap(18, 18, 18)
                                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(stockTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                                            .addComponent(stockTextField)
                                             .addComponent(priceTextField)))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addGap(1, 1, 1)
@@ -248,16 +312,17 @@ public class FrmInventory extends javax.swing.JFrame {
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(catTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-                                    .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.TRAILING))))))
-                .addContainerGap(193, Short.MAX_VALUE))
+                                    .addComponent(catTextField)
+                                    .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(195, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(65, 65, 65)
+                .addGap(56, 56, 56)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -277,10 +342,12 @@ public class FrmInventory extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(priceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(96, Short.MAX_VALUE))
+                .addGap(54, 54, 54)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/data.png")), jPanel2); // NOI18N
+        productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/data.png")), jPanel2); // NOI18N
 
         allProductsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -290,6 +357,11 @@ public class FrmInventory extends javax.swing.JFrame {
                 "ID", "Name", "Brand", "Type", "Price", "Stock"
             }
         ));
+        allProductsTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                allProductsTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(allProductsTable);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -309,17 +381,30 @@ public class FrmInventory extends javax.swing.JFrame {
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/product.png")), jPanel3); // NOI18N
+        productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/product.png")), jPanel3); // NOI18N
 
         subtotalTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Name", "Brand", "Subtotal"
+                "Name", "Brand", "Subtotal"
             }
         ));
+        subtotalTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                subtotalTableMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(subtotalTable);
+
+        jLabel8.setText("Total amount of spare parts: ");
+
+        jScrollPane3.setViewportView(amountPane);
+
+        jLabel9.setText("Total amount in $: ");
+
+        jScrollPane4.setViewportView(amountInDollarsPane);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -327,18 +412,35 @@ public class FrmInventory extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(61, 61, 61)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 594, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 594, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(91, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(23, 23, 23)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel9)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/total.png")), jPanel4); // NOI18N
+        productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/total.png")), jPanel4); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -347,7 +449,7 @@ public class FrmInventory extends javax.swing.JFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(productsTabbedPane)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -355,7 +457,7 @@ public class FrmInventory extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jTabbedPane1)
+                .addComponent(productsTabbedPane)
                 .addContainerGap())
         );
 
@@ -371,21 +473,55 @@ public class FrmInventory extends javax.swing.JFrame {
     }//GEN-LAST:event_brandTextFieldActionPerformed
 
     private void newProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProductActionPerformed
-        this.nameTextField.setText("");
-        this.catTextField.setText("");
-        this.brandTextField.setText("");
-        this.priceTextField.setText("");
-        this.stockTextField.setText("");
-        this.nameTextField.requestFocus();
+        clean();
     }//GEN-LAST:event_newProductActionPerformed
 
     private void saveLocallyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveLocallyActionPerformed
-        Product product = createProduct();
+        Product product = getProduct(true);
         allProducts.put(product.getId(), product);
         refreshTable(product);
         refreshSubtotalTable(product);
-        
+        JOptionPane.showMessageDialog(this, "Product succesfullysaved", 
+                "Product saved", JOptionPane.INFORMATION_MESSAGE);
+        clean();
     }//GEN-LAST:event_saveLocallyActionPerformed
+
+    private void deleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProductActionPerformed
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete the product?", 
+                "WARNING", JOptionPane.YES_NO_OPTION);
+        if(dialogResult == JOptionPane.YES_OPTION) {
+            allProducts.remove(currentProduct.getId());
+            currentProduct = null;
+            refreshTable(currentProduct);
+            refreshSubtotalTable(currentProduct);
+            JOptionPane.showMessageDialog(this, "Product successfully deleted", 
+                    "Product deleted", JOptionPane.INFORMATION_MESSAGE);
+            clean();
+        } else {
+            JOptionPane.showMessageDialog(this, "Product not removed", 
+                    "aborted", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_deleteProductActionPerformed
+
+    private void subtotalTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subtotalTableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_subtotalTableMouseClicked
+
+    private void allProductsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allProductsTableMouseClicked
+        DefaultTableModel model = (DefaultTableModel) allProductsTable.getModel();
+        String id = (String) model.getValueAt(allProductsTable.getSelectedRow(), 0);
+        loadDataToForm(id);
+    }//GEN-LAST:event_allProductsTableMouseClicked
+
+    private void updateLocallyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateLocallyActionPerformed
+        Product product = getProduct(false);
+        allProducts.put(currentProduct.getId(), product);
+        refreshTable(product);
+        refreshSubtotalTable(product);
+        JOptionPane.showMessageDialog(this, "Saved", "Updated successfully", JOptionPane.INFORMATION_MESSAGE);
+        clean();
+    }//GEN-LAST:event_updateLocallyActionPerformed
 
     /**
      * @param args the command line arguments
@@ -424,6 +560,8 @@ public class FrmInventory extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable allProductsTable;
+    private javax.swing.JTextPane amountInDollarsPane;
+    private javax.swing.JTextPane amountPane;
     private javax.swing.JTextField brandTextField;
     private javax.swing.JTextField catTextField;
     private javax.swing.JButton deleteProduct;
@@ -434,20 +572,25 @@ public class FrmInventory extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JButton newProduct;
     private javax.swing.JTextField priceTextField;
+    private javax.swing.JTabbedPane productsTabbedPane;
     private javax.swing.JButton saveLocally;
     private javax.swing.JButton saveToDatabase;
     private javax.swing.JTextField stockTextField;
     private javax.swing.JTable subtotalTable;
+    private javax.swing.JButton updateLocally;
     // End of variables declaration//GEN-END:variables
 }
