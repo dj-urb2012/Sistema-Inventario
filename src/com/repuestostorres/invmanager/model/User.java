@@ -25,17 +25,46 @@ public class User {
 
     public User() {
     }
+
+    public User(String loginName, String passwd, boolean registered) {
+        this.loginName = loginName;
+        this.passwd = passwd;
+        this.registered = registered;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
+    }
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
     
     public boolean verifyAccount() throws SQLException {
         getUserData();
-        boolean tieneCuenta = rs.getBoolean("isRegistered");
-        return tieneCuenta;
+        return true;
     }
     
     public void getUserData() {
         try {
-            this.conn = Conexion.getConnection();
-            String tSQL = "SELECT * FROM User";
+            conn = Conexion.getConnection();
+            String tSQL = "Select * from User";
             ps = conn.prepareStatement(tSQL,
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE,
