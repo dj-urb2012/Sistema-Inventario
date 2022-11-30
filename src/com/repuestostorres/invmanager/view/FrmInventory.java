@@ -4,11 +4,14 @@
  */
 package com.repuestostorres.invmanager.view;
 
-import com.repuestostorres.invmanager.daoimpl.ProductDaoImpl;
+import com.repuestostorres.invmanager.daoimpl.productDao;
 import com.repuestostorres.invmanager.model.Product;
 import com.repuestostorres.invmanager.model.ProductRecord;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -40,7 +43,6 @@ public class FrmInventory extends javax.swing.JFrame {
         statsDemo.addColumn("Subtotal");
         this.allProductsTable.setModel(allDemo);
         this.editStock.setEnabled(false);
-        loadFromDatabase();
     }
 
     //Data structures
@@ -51,7 +53,7 @@ public class FrmInventory extends javax.swing.JFrame {
     ArrayList<ProductRecord> productRecords = new ArrayList<>();
     Product currentProduct = null;
     boolean saveFlowRecord = false;
-    ProductDaoImpl productDao = new ProductDaoImpl();
+    productDao productDao = new productDao();
     
     //Functions
     
@@ -199,15 +201,6 @@ public class FrmInventory extends javax.swing.JFrame {
         ProductRecord pr = new ProductRecord(name, brand, recordType, 
                         amount, price);
         return pr;
-    }
-    
-    public void loadFromDatabase() {
-        ArrayList<Product> productsFromDatabase = productDao.getAllProducts();
-        for(Product product : productsFromDatabase) {
-            allProducts.put(product.getId(), product);
-        }
-        refreshTable();
-        refreshSubtotalTable();
     }
     
     /**
@@ -375,7 +368,7 @@ public class FrmInventory extends javax.swing.JFrame {
         });
         jToolBar1.add(editStock);
 
-        jLabel3.setText("Nombre");
+        jLabel3.setText("Nombre:");
 
         jLabel4.setText("Categoria:");
 
@@ -404,34 +397,35 @@ public class FrmInventory extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(163, 163, 163)
+                        .addGap(151, 151, 151)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(catTextField)
-                                    .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(337, 337, 337))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(32, 32, 32)
-                                .addComponent(brandTextField))))
+                            .addComponent(stockTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                            .addComponent(priceTextField)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(151, 151, 151)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(16, 16, 16)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(stockTextField)
-                            .addComponent(priceTextField))))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                                        .addGap(40, 40, 40))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(32, 32, 32)))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(catTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)
+                                .addComponent(brandTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(192, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -632,6 +626,7 @@ public class FrmInventory extends javax.swing.JFrame {
         clean();
         this.stockTextField.setEditable(true); 
         this.editStock.setEnabled(false);
+        this.saveLocally.setEnabled(true);
     }//GEN-LAST:event_saveLocallyActionPerformed
 
     private void deleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProductActionPerformed
@@ -660,6 +655,7 @@ public class FrmInventory extends javax.swing.JFrame {
 
     private void allProductsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allProductsTableMouseClicked
         this.stockTextField.setEditable(false);
+        this.saveLocally.setEnabled(false);
         this.editStock.setEnabled(true);
         DefaultTableModel model = (DefaultTableModel) allProductsTable.getModel();
         String id = (String) model.getValueAt(allProductsTable.getSelectedRow(), 0);
@@ -694,12 +690,13 @@ public class FrmInventory extends javax.swing.JFrame {
     }//GEN-LAST:event_editStockActionPerformed
 
     private void saveToDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveToDatabaseActionPerformed
-        productDao.clearDatabase();
-        ArrayList<Product> all = new ArrayList<>();
         for(Product product : allProducts.values()) {
-            all.add(product);
+            try {
+                productDao.insertProduct(product);
+            } catch (SQLException ex) {
+                Logger.getLogger(FrmInventory.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        productDao.insertProduct(currentProduct);
     }//GEN-LAST:event_saveToDatabaseActionPerformed
 
     /**
