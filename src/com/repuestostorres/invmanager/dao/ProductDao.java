@@ -14,9 +14,5 @@ import java.util.ArrayList;
 public interface ProductDao {
     void insertProduct(Product product);
     ArrayList<Product> getAllProducts();
-    Product getProductByName();
-    Product getProdyById();
-    void updateProduct();
-    void deleteProduct();
-    void saveProducts();
+    void clearDatabase();
 }

@@ -5,11 +5,13 @@
 package com.repuestostorres.invmanager.daoimpl;
 
 import com.repuestostorres.invmanager.dao.ProductDao;
-import com.repuestostorres.invmanager.database.Database;
+import com.repuestostorres.invmanager.database.Conexion;
 import com.repuestostorres.invmanager.model.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,13 +22,14 @@ import javax.swing.JOptionPane;
  * @author Diego
  */
 public class ProductDaoImpl implements ProductDao {
+    private Connection conn = null;
 
     @Override
     public void insertProduct(Product product) {
         try {
-            Connection conn = Database.getConnection();
-            String statement = "INSERT INTO Products (idProduct, productName"
-                    + ", productBrand, productType, productPrice, productStock)"
+            
+            conn = Conexion.getConnection();
+            String statement = "INSERT INTO Products (idProduct, productName, productBrand, productType, productPrice, productStock)"
                     + " VALUES(?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(statement);
             ps.setString(1, product.getId());
@@ -36,7 +39,7 @@ public class ProductDaoImpl implements ProductDao {
             ps.setFloat(5, product.getPrice());
             ps.setInt(6, product.getStock());
             ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Product saved", "Product successfully saved", JOptionPane.INFORMATION_MESSAGE);
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(ProductDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Something went wrong", "Error", JOptionPane.INFORMATION_MESSAGE);
@@ -45,32 +48,53 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public ArrayList<Product> getAllProducts() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ArrayList<Product> allProducts = new ArrayList<>();
+        try {
+            conn = Conexion.getConnection();
+            String tSQL = "SELECT * FROM Products";
+            PreparedStatement ps = conn.prepareStatement(tSQL,
+                    ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE,
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT
+            );
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product product = new Product(
+                        rs.getString("idProduct"),
+                        rs.getString("productName"),
+                        rs.getString("productBrand"),
+                        rs.getString("productType"),
+                        rs.getFloat("productPrice"),
+                        rs.getInt("productStock")
+                );
+                allProducts.add(product);
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return allProducts;
     }
 
     @Override
-    public Product getProductByName() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Product getProdyById() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void updateProduct() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void deleteProduct() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void saveProducts() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void clearDatabase() {
+        
+        Statement stmt;
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            String query = "DELETE FROM Products";
+            int deletedRows = stmt.executeUpdate(query);
+            if (deletedRows > 0) {
+                System.out.println("Deleted All Rows In The Table Successfully");
+            } else {
+                System.out.println("Table already empty");
+            }
+            conn.close();
+            stmt.close();
+        } catch(SQLException ex) {
+            System.out.println(ex.toString());
+        }
     }
 
 }

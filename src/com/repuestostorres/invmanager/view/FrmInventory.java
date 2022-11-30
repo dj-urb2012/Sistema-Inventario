@@ -4,6 +4,7 @@
  */
 package com.repuestostorres.invmanager.view;
 
+import com.repuestostorres.invmanager.daoimpl.ProductDaoImpl;
 import com.repuestostorres.invmanager.model.Product;
 import com.repuestostorres.invmanager.model.ProductRecord;
 import java.util.ArrayList;
@@ -23,32 +24,35 @@ public class FrmInventory extends javax.swing.JFrame {
     public FrmInventory() {
         initComponents();
         allDemo.addColumn("ID");
-        allDemo.addColumn("Name");
-        allDemo.addColumn("Brand");
-        allDemo.addColumn("Type");
-        allDemo.addColumn("Price");
-        allDemo.addColumn("Stock");
-        totalDemo.addColumn("Name");
-        totalDemo.addColumn("Brand");
+        allDemo.addColumn("Nombre");
+        allDemo.addColumn("Marca");
+        allDemo.addColumn("Tipe");
+        allDemo.addColumn("Precio");
+        allDemo.addColumn("Existencia");
+        totalDemo.addColumn("Nombre");
+        totalDemo.addColumn("Marca");
         totalDemo.addColumn("Subtotal");
-        statsDemo.addColumn("Name");
-        statsDemo.addColumn("Brand");
-        statsDemo.addColumn("Record type");
-        statsDemo.addColumn("Amount");
-        statsDemo.addColumn("Price");
+        statsDemo.addColumn("Nombre");
+        statsDemo.addColumn("Marca");
+        statsDemo.addColumn("Tipo registro");
+        statsDemo.addColumn("cantidad");
+        statsDemo.addColumn("Precio");
         statsDemo.addColumn("Subtotal");
         this.allProductsTable.setModel(allDemo);
         this.editStock.setEnabled(false);
+        loadFromDatabase();
     }
 
     //Data structures
     HashMap<String, Product> allProducts = new HashMap<>();
-    DefaultTableModel allDemo = new DefaultTableModel(); //(DefaultTableModel) this.allProductsTable.getModel();
+    DefaultTableModel allDemo = new DefaultTableModel(); 
     DefaultTableModel totalDemo = new DefaultTableModel();
     DefaultTableModel statsDemo = new DefaultTableModel();
     ArrayList<ProductRecord> productRecords = new ArrayList<>();
     Product currentProduct = null;
     boolean saveFlowRecord = false;
+    ProductDaoImpl productDao = new ProductDaoImpl();
+    
     //Functions
     
     public String generateId() {
@@ -95,28 +99,28 @@ public class FrmInventory extends javax.swing.JFrame {
         return total;
     }
     
-    public void refreshTable(Product product) {
+    public void refreshTable() {
         allDemo.setRowCount(0);
-        for(Product singleProduct : allProducts.values()) {
+        for(Product product : allProducts.values()) {
             allDemo.addRow(new Object[] {
-                singleProduct.getId(),
-                singleProduct.getName(),
-                singleProduct.getBrand(),
-                singleProduct.getType(),
-                Float.toString(singleProduct.getPrice()),
-                Integer.toString(singleProduct.getStock())
+                product.getId(),
+                product.getName(),
+                product.getBrand(),
+                product.getType(),
+                Float.toString(product.getPrice()),
+                Integer.toString(product.getStock())
             });
         }
         this.allProductsTable.setModel(allDemo);
     }
     
-    public void refreshSubtotalTable(Product product) {
+    public void refreshSubtotalTable() {
         totalDemo.setRowCount(0);
-        for(Product singleProduct : allProducts.values()) {
+        for(Product product : allProducts.values()) {
             totalDemo.addRow(new Object[] {
-                singleProduct.getName(),
-                singleProduct.getBrand(),
-                singleProduct.calculateSubtotal()
+                product.getName(),
+                product.getBrand(),
+                product.calculateSubtotal()
             });
         }
         this.subtotalTable.setModel(totalDemo);
@@ -124,16 +128,16 @@ public class FrmInventory extends javax.swing.JFrame {
         this.amountInDollarsPane.setText(Float.toString(getAmountInDollars()));
     }
     
-    public void refreshRecordTable(ProductRecord productrecord) {
+    public void refreshRecordTable() {
         statsDemo.setRowCount(0);
-        for(ProductRecord singleProductRecord : productRecords) {
+        for(ProductRecord productRecord : productRecords) {
             statsDemo.addRow(new Object[] {
-                singleProductRecord.getName(),
-                singleProductRecord.getBrand(),
-                singleProductRecord.getRecordType(),
-                singleProductRecord.getNumberOfProducts(),
-                singleProductRecord.getPrice(),
-                singleProductRecord.calculateTotal()
+                productRecord.getName(),
+                productRecord.getBrand(),
+                productRecord.getRecordType(),
+                productRecord.getNumberOfProducts(),
+                productRecord.getPrice(),
+                productRecord.calculateTotal()
             });
         }
         this.productRecordsTable.setModel(statsDemo);
@@ -195,6 +199,15 @@ public class FrmInventory extends javax.swing.JFrame {
         ProductRecord pr = new ProductRecord(name, brand, recordType, 
                         amount, price);
         return pr;
+    }
+    
+    public void loadFromDatabase() {
+        ArrayList<Product> productsFromDatabase = productDao.getAllProducts();
+        for(Product product : productsFromDatabase) {
+            allProducts.put(product.getId(), product);
+        }
+        refreshTable();
+        refreshSubtotalTable();
     }
     
     /**
@@ -275,9 +288,12 @@ public class FrmInventory extends javax.swing.JFrame {
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
+        productsTabbedPane.setToolTipText("");
+
         jToolBar1.setRollover(true);
 
         newProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/new.png"))); // NOI18N
+        newProduct.setToolTipText("Crear nuevo");
         newProduct.setFocusable(false);
         newProduct.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         newProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -289,6 +305,7 @@ public class FrmInventory extends javax.swing.JFrame {
         jToolBar1.add(newProduct);
 
         saveLocally.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/save.png"))); // NOI18N
+        saveLocally.setToolTipText("Guardar");
         saveLocally.setFocusable(false);
         saveLocally.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         saveLocally.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -300,6 +317,7 @@ public class FrmInventory extends javax.swing.JFrame {
         jToolBar1.add(saveLocally);
 
         updateLocally.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/update.png"))); // NOI18N
+        updateLocally.setToolTipText("Actualizar");
         updateLocally.setFocusable(false);
         updateLocally.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         updateLocally.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -311,6 +329,7 @@ public class FrmInventory extends javax.swing.JFrame {
         jToolBar1.add(updateLocally);
 
         deleteProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/delete.png"))); // NOI18N
+        deleteProduct.setToolTipText("Eliminar");
         deleteProduct.setFocusable(false);
         deleteProduct.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         deleteProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -322,12 +341,19 @@ public class FrmInventory extends javax.swing.JFrame {
         jToolBar1.add(deleteProduct);
 
         saveToDatabase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/save_database.png"))); // NOI18N
+        saveToDatabase.setToolTipText("Guardar en BD");
         saveToDatabase.setFocusable(false);
         saveToDatabase.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         saveToDatabase.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        saveToDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveToDatabaseActionPerformed(evt);
+            }
+        });
         jToolBar1.add(saveToDatabase);
 
         FlowRecords.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/stat2.png"))); // NOI18N
+        FlowRecords.setToolTipText("Crear registros");
         FlowRecords.setFocusable(false);
         FlowRecords.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         FlowRecords.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -338,7 +364,7 @@ public class FrmInventory extends javax.swing.JFrame {
         });
         jToolBar1.add(FlowRecords);
 
-        editStock.setText("Edit stock");
+        editStock.setText("Editar existencia");
         editStock.setFocusable(false);
         editStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         editStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -349,15 +375,15 @@ public class FrmInventory extends javax.swing.JFrame {
         });
         jToolBar1.add(editStock);
 
-        jLabel3.setText("Name:");
+        jLabel3.setText("Nombre");
 
-        jLabel4.setText("Category:");
+        jLabel4.setText("Categoria:");
 
-        jLabel5.setText("Brand:");
+        jLabel5.setText("Marca:");
 
-        jLabel6.setText("Stock:");
+        jLabel6.setText("Existencia:");
 
-        jLabel7.setText("Price $:");
+        jLabel7.setText("Precio:");
 
         brandTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -378,36 +404,35 @@ public class FrmInventory extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(166, 166, 166)
+                        .addGap(163, 163, 163)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel7))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(stockTextField)
-                                            .addComponent(priceTextField)))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(1, 1, 1)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(brandTextField))))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(catTextField)
-                                    .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(337, 337, 337))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32)
+                                .addComponent(brandTextField))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(40, 40, 40)
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(195, Short.MAX_VALUE))
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(151, 151, 151)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(16, 16, 16)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(stockTextField)
+                            .addComponent(priceTextField))))
+                .addContainerGap(192, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -437,14 +462,14 @@ public class FrmInventory extends javax.swing.JFrame {
                 .addContainerGap(57, Short.MAX_VALUE))
         );
 
-        productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/data.png")), jPanel2); // NOI18N
+        productsTabbedPane.addTab("Datos", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/data.png")), jPanel2); // NOI18N
 
         allProductsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Name", "Brand", "Type", "Price", "Stock"
+                "ID", "Nombre", "Marca", "Tipo", "Precio", "Existencia"
             }
         ));
         allProductsTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -471,14 +496,14 @@ public class FrmInventory extends javax.swing.JFrame {
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
-        productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/product.png")), jPanel3); // NOI18N
+        productsTabbedPane.addTab("Respuestos", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/product.png")), jPanel3); // NOI18N
 
         subtotalTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Name", "Brand", "Subtotal"
+                "Nombre", "Marca", "Subtotal"
             }
         ));
         subtotalTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -530,14 +555,14 @@ public class FrmInventory extends javax.swing.JFrame {
                 .addContainerGap(82, Short.MAX_VALUE))
         );
 
-        productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/total.png")), jPanel4); // NOI18N
+        productsTabbedPane.addTab("Total", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/total.png")), jPanel4); // NOI18N
 
         productRecordsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Name", "Brand", "Record Type", "Amount", "Price", "Subtotal"
+                "Nombre", "Marca", "Tipo registro", "Cantidad", "Precio", "Subtotal"
             }
         ));
         jScrollPane5.setViewportView(productRecordsTable);
@@ -559,7 +584,7 @@ public class FrmInventory extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        productsTabbedPane.addTab("", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/stats.png")), jPanel5); // NOI18N
+        productsTabbedPane.addTab("Entradas y salidas", new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/icons/stats.png")), jPanel5); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -600,8 +625,8 @@ public class FrmInventory extends javax.swing.JFrame {
     private void saveLocallyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveLocallyActionPerformed
         Product product = getProduct(true);
         allProducts.put(product.getId(), product);
-        refreshTable(product);
-        refreshSubtotalTable(product);
+        refreshTable();
+        refreshSubtotalTable();
         JOptionPane.showMessageDialog(this, "Product succesfully saved", 
                 "Product saved", JOptionPane.INFORMATION_MESSAGE);
         clean();
@@ -615,8 +640,8 @@ public class FrmInventory extends javax.swing.JFrame {
         if(dialogResult == JOptionPane.YES_OPTION) {
             allProducts.remove(currentProduct.getId());
             currentProduct = null;
-            refreshTable(currentProduct);
-            refreshSubtotalTable(currentProduct);
+            refreshTable();
+            refreshSubtotalTable();
             JOptionPane.showMessageDialog(this, "Product successfully deleted", 
                     "Product deleted", JOptionPane.INFORMATION_MESSAGE);
             clean();
@@ -645,13 +670,13 @@ public class FrmInventory extends javax.swing.JFrame {
         if(saveFlowRecord) {
             ProductRecord pr = getDataforRecord();
             productRecords.add(pr);
-            refreshRecordTable(pr);
+            refreshRecordTable();
             saveFlowRecord = false;
         }
         Product product = getProduct(false);
         allProducts.put(currentProduct.getId(), product);
-        refreshTable(product);
-        refreshSubtotalTable(product);
+        refreshTable();
+        refreshSubtotalTable();
         this.editStock.setEnabled(false);
         clean();
         JOptionPane.showMessageDialog(this, "Saved", "Updated successfully", JOptionPane.INFORMATION_MESSAGE);
@@ -667,6 +692,15 @@ public class FrmInventory extends javax.swing.JFrame {
     private void editStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editStockActionPerformed
         this.stockTextField.setEditable(true);
     }//GEN-LAST:event_editStockActionPerformed
+
+    private void saveToDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveToDatabaseActionPerformed
+        productDao.clearDatabase();
+        ArrayList<Product> all = new ArrayList<>();
+        for(Product product : allProducts.values()) {
+            all.add(product);
+        }
+        productDao.insertProduct(currentProduct);
+    }//GEN-LAST:event_saveToDatabaseActionPerformed
 
     /**
      * @param args the command line arguments

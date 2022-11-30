@@ -16,6 +16,8 @@ public class FrmUser extends javax.swing.JFrame {
         initComponents();
     }
 
+    
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -29,12 +31,12 @@ public class FrmUser extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
+        jPasswordField1 = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        TfUsername = new javax.swing.JTextField();
-        TfPw = new javax.swing.JTextField();
+        javax.swing.JTextField TfUsername = new javax.swing.JTextField();
         BtnLogin = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
@@ -67,27 +69,31 @@ public class FrmUser extends javax.swing.JFrame {
 
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPasswordField1.setBackground(new java.awt.Color(0, 255, 255));
+        jPanel3.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 270, 220, -1));
+
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 0));
-        jLabel3.setText("Welcome Back,");
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 60, 170, 60));
+        jLabel3.setText("Bienvenido");
+        jLabel3.setToolTipText("");
+        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 100, 170, 60));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel4.setText("Sign in to continue");
-        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 120, -1, -1));
+        jLabel4.setText("Inicie sesión para continuar");
+        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Username:");
+        jLabel5.setText("Usuario");
         jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel6.setText("Password:");
+        jLabel6.setText("Clave:");
         jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 270, -1, -1));
 
-        TfUsername.setBackground(new java.awt.Color(0, 204, 204));
+        TfUsername.setBackground(new java.awt.Color(0, 255, 255));
         TfUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TfUsernameActionPerformed(evt);
@@ -95,12 +101,9 @@ public class FrmUser extends javax.swing.JFrame {
         });
         jPanel3.add(TfUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 220, 220, -1));
 
-        TfPw.setBackground(new java.awt.Color(0, 204, 204));
-        jPanel3.add(TfPw, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 270, 220, -1));
-
         BtnLogin.setBackground(new java.awt.Color(204, 0, 255));
         BtnLogin.setForeground(new java.awt.Color(255, 255, 255));
-        BtnLogin.setText("Login");
+        BtnLogin.setText("Iniciar Sesión");
         jPanel3.add(BtnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 350, -1, -1));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/repuestostorres/invmanager/resources/img/fondopantalla.jpg"))); // NOI18N
@@ -163,8 +166,6 @@ public class FrmUser extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnLogin;
-    private javax.swing.JTextField TfPw;
-    private javax.swing.JTextField TfUsername;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -174,6 +175,7 @@ public class FrmUser extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPasswordField jPasswordField1;
     // End of variables declaration//GEN-END:variables
 
 }

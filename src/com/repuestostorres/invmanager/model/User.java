@@ -4,6 +4,12 @@
  */
 package com.repuestostorres.invmanager.model;
 
+import com.repuestostorres.invmanager.database.Conexion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  *
  * @author Diego
@@ -12,43 +18,32 @@ public class User {
 
     private String loginName;
     private String passwd;
-    private static boolean registered;
+    private boolean registered;
+    private Connection conn = null;
+    private PreparedStatement ps = null;
+    private ResultSet rs = null;
 
     public User() {
     }
     
-    public User(String loginName, String passwd) {
-        this.loginName = loginName;
-        this.passwd = passwd;
-    }
-
-    public String getLoginName() {
-        return loginName;
-    }
-
-    public String getPasswd() {
-        return passwd;
+    public boolean verifyAccount() throws SQLException {
+        getUserData();
+        boolean tieneCuenta = rs.getBoolean("isRegistered");
+        return tieneCuenta;
     }
     
-    public static boolean isRegistered() {
-        return registered;
-    }
-
-    public static void setRegistered(boolean aRegistered) {
-        registered = aRegistered;
-    }
-    
-    public void createAccount() {
-        
-        //
-    }
-    public void verifyIfAccountIsCreated() {
-        //
-    }
-    public void logout() {
-        //
-    }
-    public void login() {
-        //
-    }
+    public void getUserData() {
+        try {
+            this.conn = Conexion.getConnection();
+            String tSQL = "SELECT * FROM User";
+            ps = conn.prepareStatement(tSQL,
+                    ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE,
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT
+                );
+            rs = ps.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println("Error al obtener registros" + ex.getStackTrace());
+        }
+    } 
 }
