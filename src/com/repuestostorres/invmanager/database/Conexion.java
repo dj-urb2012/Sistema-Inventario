@@ -16,8 +16,10 @@ public class Conexion {
     private static Conexion conx = null;
     //atributos
     private static Connection con = null;
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databasename="
-            + "BDRepuestosTorres;";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;"
+            + "databaseName=DBRepuestosTorres;"
+            + "Persist Security Info=True;";
+
     private static final String USER = "sa";
     private static final String PASSWORD = "12345";
 

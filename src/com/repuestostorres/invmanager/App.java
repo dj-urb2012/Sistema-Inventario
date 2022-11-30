@@ -4,10 +4,9 @@
  */
 package com.repuestostorres.invmanager;
 
-import com.repuestostorres.invmanager.model.User;
+
 import com.repuestostorres.invmanager.view.FrmInventory;
-import com.repuestostorres.invmanager.view.FrmUser;
-import com.repuestostorres.invmanager.view.NewUser;
+
 import java.sql.SQLException;
 
 

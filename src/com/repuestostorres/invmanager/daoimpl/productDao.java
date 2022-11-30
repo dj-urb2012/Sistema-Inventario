@@ -36,16 +36,6 @@ public class productDao {
                     ResultSet.HOLD_CURSORS_OVER_COMMIT
             );
             rs = ps.executeQuery();
-            while (rs.next()) {
-                Product product = new Product(
-                        rs.getString("idProduct"),
-                        rs.getString("productName"),
-                        rs.getString("productBrand"),
-                        rs.getString("productType"),
-                        rs.getFloat("productPrice"),
-                        rs.getInt("productStock")
-                );
-            }
         } catch(SQLException ex) {
             System.out.println("Error al obtener registros: " + ex.getMessage());
         }
