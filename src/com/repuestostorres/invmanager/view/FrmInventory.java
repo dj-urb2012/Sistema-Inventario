@@ -171,28 +171,26 @@ public class FrmInventory extends javax.swing.JFrame {
         String brand = this.brandTextField.getText();
         String recordType;
         while(true) {
-            recordType = JOptionPane.showInputDialog("In or Out");
-            if(recordType.toUpperCase().equals("IN") || recordType.toUpperCase()
-                    .equals("OUT")) break;
+            recordType = JOptionPane.showInputDialog("Entrada o salida").toUpperCase();
+            if(recordType.toUpperCase().equals("ENTRADA") || recordType.toUpperCase()
+                    .equals("SALIDA")) break;
         }
         int amount;
         int currentAmount;
-        if(recordType.equals("out")) {
+        if(recordType.equals("SALIDA")) {
             while(true) {
-                amount = Integer.parseInt(JOptionPane.showInputDialog("Amount of "
-                    + "products + or -"));
+                amount = Integer.parseInt(JOptionPane.showInputDialog("Cantidad"));
                 currentAmount = Integer.parseInt(this.stockTextField.getText());
                 currentAmount -= amount;
                 if(currentAmount > 0) {
                     this.stockTextField.setText(Integer.toString(currentAmount));
                     break;
                 } else {
-                    JOptionPane.showMessageDialog(this, "Invalid amount of products");
+                    JOptionPane.showMessageDialog(this, "Cantidad invalida de productos");
                 }
             }
         } else {
-            amount = Integer.parseInt(JOptionPane.showInputDialog("Amount of "
-                    + "products + or -"));
+            amount = Integer.parseInt(JOptionPane.showInputDialog("Cantidad"));
             currentAmount = Integer.parseInt(this.stockTextField.getText()) +
                     amount;
             this.stockTextField.setText(Integer.toString(currentAmount));
@@ -614,6 +612,7 @@ public class FrmInventory extends javax.swing.JFrame {
         clean();
         this.stockTextField.setEditable(true);
         this.editStock.setEnabled(false);
+        this.saveLocally.setEnabled(true);
     }//GEN-LAST:event_newProductActionPerformed
 
     private void saveLocallyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveLocallyActionPerformed
@@ -621,8 +620,8 @@ public class FrmInventory extends javax.swing.JFrame {
         allProducts.put(product.getId(), product);
         refreshTable();
         refreshSubtotalTable();
-        JOptionPane.showMessageDialog(this, "Product succesfully saved", 
-                "Product saved", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Producto guardado exitosamente", 
+                "Producto guardado", JOptionPane.INFORMATION_MESSAGE);
         clean();
         this.stockTextField.setEditable(true); 
         this.editStock.setEnabled(false);
@@ -630,21 +629,22 @@ public class FrmInventory extends javax.swing.JFrame {
     }//GEN-LAST:event_saveLocallyActionPerformed
 
     private void deleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProductActionPerformed
-        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete the product?", 
-                "WARNING", JOptionPane.YES_NO_OPTION);
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Confirmar", 
+                "ADVERTENCIA", JOptionPane.YES_NO_OPTION);
         if(dialogResult == JOptionPane.YES_OPTION) {
             allProducts.remove(currentProduct.getId());
             currentProduct = null;
             refreshTable();
             refreshSubtotalTable();
-            JOptionPane.showMessageDialog(this, "Product successfully deleted", 
-                    "Product deleted", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Producto eliminado exitosamente", 
+                    "Product eliminado", JOptionPane.INFORMATION_MESSAGE);
             clean();
             this.stockTextField.setEditable(true);
-            this.editStock.setEnabled(false);
+            this.editStock.setEnabled(true);
+            this.saveLocally.setEnabled(false);
         } else {
-            JOptionPane.showMessageDialog(this, "Product not removed", 
-                    "aborted", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Producto elimnado", 
+                    "Abortar", JOptionPane.INFORMATION_MESSAGE);
         }
         
     }//GEN-LAST:event_deleteProductActionPerformed
@@ -674,15 +674,16 @@ public class FrmInventory extends javax.swing.JFrame {
         refreshTable();
         refreshSubtotalTable();
         this.editStock.setEnabled(false);
+        this.saveLocally.setEnabled(true);
         clean();
-        JOptionPane.showMessageDialog(this, "Saved", "Updated successfully", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "guardado", "Se ha guarado exitosamente", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_updateLocallyActionPerformed
 
     private void FlowRecordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FlowRecordsActionPerformed
         saveFlowRecord = true;
         this.editStock.setEnabled(false);
-        JOptionPane.showMessageDialog(this, "A record is about to be saved"
-                + " Please update locally");
+        JOptionPane.showMessageDialog(this, "Un registro sera guardado, por favor"
+                + "guarde localmente");
     }//GEN-LAST:event_FlowRecordsActionPerformed
 
     private void editStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editStockActionPerformed
